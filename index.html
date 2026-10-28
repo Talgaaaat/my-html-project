@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Поймай звёзды</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        color: white;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        min-height: 100vh;
+    }
+
+    h1 {
+        padding-top: 25px;
+        font-size: 36px;
+    }
+
+    .info {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        font-size: 20px;
+        margin: 20px;
+    }
+
+    #game {
+        position: relative;
+        width: 90%;
+        max-width: 600px;
+        height: 400px;
+        margin: 20px auto;
+        background: rgba(255, 255, 255, 0.15);
+        border: 3px solid white;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    #star {
+        position: absolute;
+        display: none;
+        font-size: 45px;
+        cursor: pointer;
+        user-select: none;
+        transition: transform 0.1s;
+    }
+
+    #star:hover {
+        transform: scale(1.2);
+    }
+
+    button {
+        padding: 14px 28px;
+        font-size: 18px;
+        color: #6545b5;
+        background: white;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background: #ffe082;
+    }
+
+    #message {
+        font-size: 22px;
+        margin: 15px;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>⭐ Поймай звёзды! ⭐</h1>
+
+<div class="info">
+    <div>Очки: <span id="score">0</span></div>
+    <div>Время: <span id="time">30</span> сек.</div>
+</div>
+
+<div id="game">
+    <div id="star">⭐</div>
+</div>
+
+<button id="startButton" onclick="startGame()">
+    Начать игру
+</button>
+
+<div id="message">Нажимай на звёзды и набирай очки!</div>
+
+<script>
+    const game = document.getElementById("game");
+    const star = document.getElementById("star");
+    const scoreText = document.getElementById("score");
+    const timeText = document.getElementById("time");
+    const message = document.getElementById("message");
+    const startButton = document.getElementById("startButton");
+
+    let score = 0;
+    let time = 30;
+    let timer;
+    let playing = false;
+
+    function moveStar() {
+        const maxX = game.clientWidth - star.offsetWidth;
+        const maxY = game.clientHeight - star.offsetHeight;
+
+        star.style.left = Math.random() * maxX + "px";
+        star.style.top = Math.random() * maxY + "px";
+
+        const stars = ["⭐", "🌟", "💎", "✨"];
+        star.textContent = stars[
+            Math.floor(Math.random() * stars.length)
+        ];
+    }
+
+    function startGame() {
+        clearInterval(timer);
+
+        score = 0;
+        time = 30;
+        playing = true;
+
+        scoreText.textContent = score;
+        timeText.textContent = time;
+        message.textContent = "Лови звёзды!";
+        startButton.textContent = "Играть заново";
+        star.style.display = "block";
+
+        moveStar();
+
+        timer = setInterval(() => {
+            time--;
+            timeText.textContent = time;
+
+            if (time <= 0) {
+                endGame();
+            }
+        }, 1000);
+    }
+
+    star.addEventListener("click", () => {
+        if (!playing) return;
+
+        score++;
+        scoreText.textContent = score;
+        moveStar();
+    });
+
+    function endGame() {
+        clearInterval(timer);
+        playing = false;
+        star.style.display = "none";
+        message.textContent = "🎉 Игра окончена! Твой результат: " + score;
+        startButton.textContent = "Сыграть ещё";
+    }
+</script>
+
+</body>
+</html>
